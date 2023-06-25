@@ -1,0 +1,17 @@
+/* Custom colors */
+:root {
+    --primary-color: #ff0000; /* Red */
+    --secondary-color: #00ff00; /* Green */
+    --tertiary-color: #8789f9;
+  }
+
+
+.logo-img {
+    height: 30px; /* Adjust the height as needed */
+    width: auto; /* Maintain the aspect ratio */
+}
+
+.custom-tertiary {
+    background-color: var(--tertiary-color);
+    border-color: var(--tertiary-color);
+}
