@@ -2,7 +2,8 @@
 :root {
     --primary-color: #ff0000; /* Red */
     --secondary-color: #00ff00; /* Green */
-    --tertiary-color: #8789f9;
+    --tertiary-color: #babbf7;
+    --tertiary-color-hover: #abacf2;
   }
 
 
@@ -14,4 +15,9 @@
 .custom-tertiary {
     background-color: var(--tertiary-color);
     border-color: var(--tertiary-color);
+}
+
+.nav-link:hover
+{
+    background-color: var(--tertiary-color-hover);
 }

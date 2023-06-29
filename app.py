@@ -21,12 +21,12 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    @app.route("/")
-    def hello():
-        users = User.query.all()
-        # for user in users:
-        #     print(f"ID: {user.id}, Email: {user.email}, First Name: {user.firstName}")
-        return render_template("index.html", users=users)
+    # registering our blueprints
+    from views import views
+    from auth import auth
+
+    app.register_blueprint(views, url_prefix="/")
+    app.register_blueprint(auth, url_prefix="/")
 
     return app
 
