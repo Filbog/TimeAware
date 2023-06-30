@@ -1,22 +1,47 @@
-from flask import Blueprint, render_template, request, flash
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    flash,
+    redirect,
+    url_for,
+    get_flashed_messages,
+)
+from flask_login import login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from email_validator import validate_email, EmailNotValidError
+from models import db, User
 
 auth = Blueprint("auth", __name__)
 
 
-@auth.route("/login", methods=["GET"])
-def login_get():
-    return render_template("login.html", temp="E BEBEBEBEBEB")
+@auth.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-
-@auth.route("/login", methods=["POST"])
-def login_post():
-    return render_template("login.html", temp="E BEBEBEBEBEB")
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                flash("logged in successfully!", category="success")
+                # this logs in the user in Flask. That 'remember=True' makes the server remember the session, so that the user isn't logged out every time they close the window
+                login_user(user, remember=True)
+                return redirect(url_for("views.home"))
+            else:
+                flash("Incorrect password, try again", category="error")
+        else:
+            flash("email does not exist", category="error")
+    return render_template("login.html", user=current_user)
 
 
 @auth.route("/logout")
+# this line makes sure that the user can access this page only if they're logged in
+@login_required
 def logout():
-    return "<h1>logout</h1>"
+    logout_user()
+    flash("logged out successfully", category="success")
+    return redirect(url_for("auth.login"))
 
 
 @auth.route("/sign-up", methods=["GET", "POST"])
@@ -34,7 +59,11 @@ def sign_up():
         except EmailNotValidError as e:
             flash(e, category="error")
             return render_template("sign_up.html")
-        if len(firstName) < 3:
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash("email already exists", category="error")
+        elif len(firstName) < 3:
             flash("Name must be greater than 2 characters.", category="error")
         elif len(firstName) > 30:
             flash("Name length is maximum 30 characters", category="error")
@@ -46,5 +75,15 @@ def sign_up():
             flash("Passwords don't match.", category="error")
         else:
             # add user to database
+            new_user = User(
+                email=email,
+                firstName=firstName,
+                password=generate_password_hash(password, method="pbkdf2"),
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            # this line is temporary, in the future I'd like to send a confirmation email and only after clicking the link in there, the user is able to log in etc
+            login_user(user, remember=True)
             flash("Account created!", category="success")
-    return render_template("sign_up.html")
+            return redirect(url_for("views.home"))
+    return render_template("sign_up.html", user=current_user)
