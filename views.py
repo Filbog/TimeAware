@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, flash
 from flask_login import login_required, current_user
+from models import db, User
 
 views = Blueprint("views", __name__)
 
@@ -22,7 +23,21 @@ def about():
     return render_template("about.html", user=current_user)
 
 
-@views.route("/dashboard")
+@views.route("/dashboard", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    return render_template("dashboard.html", user=current_user)
+    if request.method == "GET":
+        return render_template(
+            "dashboard.html", user=current_user, activities=current_user.activities
+        )
+    elif request.method == "POST":
+        activity = request.form.get("activity")
+        type = request.form.get("type")
+        print("Activity:", activity)
+        print("Type:", type)
+
+        # Rest of your code...
+        flash("form submitted successfully", category="success")
+        return render_template(
+            "dashboard.html", user=current_user, activities=current_user.activities
+        )
