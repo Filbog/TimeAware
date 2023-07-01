@@ -22,7 +22,7 @@ def about():
     return render_template("about.html", user=current_user)
 
 
-@views.route("/stats")
+@views.route("/dashboard")
 @login_required
-def stats():
-    return render_template("stats.html", user=current_user)
+def dashboard():
+    return render_template("dashboard.html", user=current_user)

@@ -3,22 +3,25 @@
 
 {% block content %}
 
-
-    <form method="POST">
+<main class="container py-5">
+    <form method="POST" class='d-flex flex-column justify-content-center'>
         <h1 align="center">Login</h1>
     
     
         <div>
             <label for="email">Email address</label>
-            <input type="email" class="form-control" id='email' name='email' placeholder='Enter email'>
+            <input type="email" class="form-control mt-1 mb-3" id='email' name='email' placeholder='Enter email'>
         </div>
         <div>
             <label for="password">Password</label>
-            <input type="password" class="form-control" id='password' name='password' placeholder='Enter password'>
+            <input type="password" class="form-control mt-1 mb-3" id='password' name='password' placeholder='Enter password'>
         </div>
         <br>
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary mx-auto w-auto px-3">Submit</button>
     </form>
+</main>
+
+   
     
     {% endblock %}
     

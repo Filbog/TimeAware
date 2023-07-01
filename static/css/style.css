@@ -21,3 +21,13 @@
 {
     background-color: var(--tertiary-color-hover);
 }
+
+
+
+/* media queries */
+
+@media (min-width: 992px) { 
+    .container{
+        max-width: 75%;
+    }
+ }
