@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash
 from flask_login import login_required, current_user
-from models import db, User
+from models import db, User, UserActivity
 
 views = Blueprint("views", __name__)
 
@@ -35,9 +35,22 @@ def dashboard():
         type = request.form.get("type")
         print("Activity:", activity)
         print("Type:", type)
-
-        # Rest of your code...
-        flash("form submitted successfully", category="success")
-        return render_template(
-            "dashboard.html", user=current_user, activities=current_user.activities
-        )
+        activityExists = UserActivity.query.filter_by(name=activity).first()
+        if len(activity) < 3:
+            flash("Activity name must be at least 3 characters", category="error")
+        elif activityExists:
+            flash("Activity already exists", category="error")
+        else:
+            new_record = UserActivity(name=activity, type=type, user_id=current_user.id)
+            db.session.add(new_record)
+            db.session.commit()
+            activities = UserActivity.query.filter_by(user_id=current_user.id).all()
+            print(activities)
+            # Rest of your code...
+            flash("form submitted successfully", category="success")
+            return render_template(
+                "dashboard.html", user=current_user, activities=current_user.activities
+            )
+    return render_template(
+        "dashboard.html", user=current_user, activities=current_user.activities
+    )

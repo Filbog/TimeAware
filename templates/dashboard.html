@@ -1,18 +1,18 @@
 {% extends "layout.html" %} 
 {% block title %} Dashboard {%endblock%} 
 
-{% block content %} Stats
+{% block content %}
 <main class="container py-5">
-    <h1 align="center">Dashboard</h1>
+    <h1 align="center" class='my-5'>Dashboard</h1>
     <form method="POST" class='d-flex flex-column justify-content-center'>
-       <label for="activity">Insert a new activity to track:</label>
-       <input type="text" id='activity' name='activity' class='form-control mt-1 mb-3'>
+       <label for="activity"><h3>Insert a new activity to track:</h3></label>
+       <input type="text" id='activity' name='activity' class='form-control mt-1 mb-3' min='3' max='100' required>
 
        <div class="radio-buttons mx-auto mb-3">
         <input type="radio" id="good" name="type" value="good" class="visually-hidden">
         <label for="good" class="button-label mx-2">Good</label>
         
-        <input type="radio" id="neutral" name="type" value="neutral" class="visually-hidden">
+        <input type="radio" id="neutral" name="type" value="neutral" class="visually-hidden" checked>
         <label for="neutral" class="button-label mx-2">Neutral</label>
         
         <input type="radio" id="bad" name="type" value="bad" class="visually-hidden">
@@ -22,8 +22,17 @@
     <button type="submit" class="btn btn-primary mx-auto">Add Activity</button>
     </form>
  
-<h1>Browse your existing activities:</h1>
+<h3 class='mt-5 mb-3'>Browse your existing activities:</h1>
+    {% if activities|length > 0 %}
+    <select class='form-select' name="" id="">
+        {% for activity in activities %}
+        <option>{{ activity.name }}</option>
+        {% endfor %}
+    </select>
+    {% else %}
+        <p>No activities yet. </p>
 
+    {% endif %}
 
 </main>
  

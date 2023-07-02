@@ -83,7 +83,7 @@ def sign_up():
             db.session.add(new_user)
             db.session.commit()
             # this line is temporary, in the future I'd like to send a confirmation email and only after clicking the link in there, the user is able to log in etc
-            login_user(user, remember=True)
+            login_user(new_user, remember=True)
             flash("Account created!", category="success")
             return redirect(url_for("views.home"))
     return render_template("sign_up.html", user=current_user)
