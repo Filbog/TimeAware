@@ -1,0 +1,32 @@
+{% extends "layout.html" %} 
+{% block title %} Tracker {%endblock%} 
+
+{% block content %}
+    <h1 align="center">Logged in/Tracker</h1>
+    {% if activities|length > 0 %}
+      <div id="activityContainer">
+         <h3>Select activity to track:</h3>
+         <select class='form-select' name="activityToTrack" id="activityToTrack">
+            {% for activity in activities %}
+            <option>{{ activity.name }}</option>
+            {% endfor %}
+         </select>
+      </div>
+      <h3 id="chosenActivity" style="display: none;"></h3>
+    {% else %}
+        <p>No activities yet. </p>
+
+    {% endif %}
+    <h1 class="display-1" id='stopwatch'>
+      <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+   </h1>
+    
+   <button id="start">Start</button>
+   <button id="pause">Pause</button>
+   <button id="finish">Finish</button>
+   
+  
+    <!-- importing my custom JS code from the 'static' folder-->
+    <script src="{{ url_for('static', filename='js/stopwatch.js') }}"></script>
+    {% endblock %}
+    

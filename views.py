@@ -13,7 +13,9 @@ def home():
         # for attr in attributes:
         #     print(attr, getattr(current_user, attr))
 
-        return render_template("index_logged.html", user=current_user)
+        return render_template(
+            "tracker.html", user=current_user, activities=current_user.activities
+        )
     else:
         return render_template("index.html", user=current_user)
 

@@ -19,11 +19,13 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-              <a class="nav-link ps-2" aria-current="page" href="/">Timer</a>
+              
             {% if user.is_authenticated %}
+              <a class="nav-link ps-2" aria-current="page" href="/">Tracker</a>
               <a class="nav-link ps-2" href="/dashboard">Dashboard</a> 
               <a class="nav-link ps-2" href="/logout">Log out</a> 
             {% else %}
+              <a class="nav-link ps-2" aria-current="page" href="/">Home</a>
               <a class="nav-link ps-2" href="/login">Log in</a>
               <a class="nav-link ps-2" href="/sign-up">Sign up</a>
             {% endif %}          
