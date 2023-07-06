@@ -1,5 +1,6 @@
 let stopwatchInterval;
-let selectedActivity = '';
+let selectedActivity;
+let activityId;
 let startTime;
 let endTime;
 let duration = 0;
@@ -13,10 +14,10 @@ const pauseBtn = document.querySelector('#pause');
 
 // Hide the pause and finish buttons initially
 pauseBtn.style.display = 'none';
-finishBtn.style.display = 'none'
+finishBtn.style.display = 'none';
 
+const displayChosenActivity = document.querySelector('#displayChosenActivity');
 const activitySelect = document.querySelector('#activityToTrack');
-const chosenActivity = document.querySelector('#chosenActivity');
 
 let appendSeconds = document.querySelector('#seconds');
 let appendMinutes = document.querySelector('#minutes');
@@ -26,7 +27,7 @@ let appendHours = document.querySelector('#hours');
 function getStartTime() { 
     startTime = Date.now();
     startTime = new Date(startTime);    
-    startTime = startTime.toLocaleString();
+    startTime = startTime.toISOString();
 
 }
 
@@ -34,14 +35,34 @@ function finishStopwatch() {
     // getting the end time
     endTime = Date.now();
     endTime = new Date(endTime);    
-    endTime = endTime.toLocaleString();
+    endTime = endTime.toISOString();
 
     const data = {
         duration: duration,
-        startTime: startTime,
-        endTime: endTime,
-        activity: selectedActivity
-    }
+        start_time: startTime,
+        end_time: endTime,
+        activity: selectedActivity,
+        user_activity_id: activityId
+    };
+
+    fetch('/save-tracked-activity-data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(function(response) {
+        if (response.ok) {
+            console.log('Data sent successfully');
+        } else {
+            console.error('Error sending data:', response.status)
+        }   
+    })
+    .catch(function(error) {
+        // Handle the error
+        console.error('An error occurred:', error)
+    });
     
 }
 
@@ -72,10 +93,12 @@ startBtn.onclick = () => {
         getStartTime();
     }
     //hiding the dropdown and showing only the chosen activity
-    selectedActivity = activitySelect.value;
-    chosenActivity.textContent = selectedActivity;
+    const selectedOption = activitySelect.options[activitySelect.selectedIndex];
+    selectedActivity = selectedOption.textContent;
+    activityId = selectedOption.value;
+    displayChosenActivity.textContent = selectedActivity;
+    displayChosenActivity.style.display = 'block';
     activitySelect.style.display = 'none';
-    chosenActivity.style.display = 'block';
 
     //show/hide buttons
     pauseBtn.style.display = 'inline-block';
@@ -98,6 +121,5 @@ pauseBtn.onclick = () => {
 finishBtn.onclick = () => {
     finishStopwatch();
     clearInterval(stopwatchInterval)
-    console.log(duration)
 }
 

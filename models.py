@@ -34,19 +34,10 @@ class TrackActivity(db.Model):
     __tablename__ = "track_activities"
     id = db.Column(db.Integer, primary_key=True)
     duration = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), default=func.now())
+    start_time = db.Column(db.DateTime(timezone=True))
+    end_time = db.Column(db.DateTime(timezone=True))
     # relation to UserActivity (many-to-one)
     user_activity_id = db.Column(
         db.Integer, db.ForeignKey("user_activities.id"), nullable=False
     )
     user_activity = db.relationship("UserActivity", back_populates="track_activities")
-
-    # method to calculate the starting time of the activity
-    def calculate_starting_time(self):
-        return self.timestamp - timedelta(seconds=self.duration)
-
-
-# event listener to add the starting time right before database insert
-@db.event.listens_for(TrackActivity, "before_insert", named=True)
-def before_insert_listener(mapper, connection, target):
-    target.user_activity.starting_time = target.calculate_starting_time()

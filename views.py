@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from models import db, User, UserActivity
 
@@ -18,6 +18,22 @@ def home():
         )
     else:
         return render_template("index.html", user=current_user)
+
+
+@views.route("/save-tracked-activity-data", methods=["POST"])
+def save_tracked_activity_data():
+    data = request.get_json()
+
+    # Access the data values
+    duration = data["duration"]
+    selectedActivity = data["activity"]
+    start_time = data["start_time"]
+    end_time = data["end_time"]
+
+    # Perform any necessary operations with the data
+    # For example, save the data to the database
+    flash("success", category="success")
+    return redirect(url_for("views.home"))
 
 
 @views.route("/about")
