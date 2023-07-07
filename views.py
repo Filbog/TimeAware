@@ -20,20 +20,24 @@ def home():
         return render_template("index.html", user=current_user)
 
 
-@views.route("/save-tracked-activity-data", methods=["POST"])
+@views.route("/save-tracked-activity-data", methods=["GET", "POST"])
 def save_tracked_activity_data():
-    data = request.get_json()
+    if request.method == "POST":
+        data = request.get_json()
 
-    # Access the data values
-    duration = data["duration"]
-    selectedActivity = data["activity"]
-    start_time = data["start_time"]
-    end_time = data["end_time"]
+        # Access the data values
+        duration = data["duration"]
+        selectedActivity = data["activity"]
+        start_time = data["start_time"]
+        end_time = data["end_time"]
+        user_activity_id = data["user_activity_id"]
 
-    # Perform any necessary operations with the data
-    # For example, save the data to the database
-    flash("success", category="success")
-    return redirect(url_for("views.home"))
+        # Perform any necessary operations with the data
+        # For example, save the data to the database
+
+        print(end_time)
+        flash("Tracking data saved successfully", category="success")
+        return redirect(url_for("views.dashboard"))
 
 
 @views.route("/about")
@@ -65,7 +69,7 @@ def dashboard():
             activities = UserActivity.query.filter_by(user_id=current_user.id).all()
             print(activities)
             # Rest of your code...
-            flash("form submitted successfully", category="success")
+            flash("Activity added!", category="success")
             return render_template(
                 "dashboard.html", user=current_user, activities=current_user.activities
             )

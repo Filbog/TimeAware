@@ -55,6 +55,7 @@ function finishStopwatch() {
     .then(function(response) {
         if (response.ok) {
             console.log('Data sent successfully');
+            // location.reload();
         } else {
             console.error('Error sending data:', response.status)
         }   
