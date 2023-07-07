@@ -26,6 +26,17 @@
    <button id="start">Start</button>
    <button id="pause">Pause</button>
    <button id="finish">Finish</button>
+
+
+   <!--Sneaky workaround to not send AJAX request with fetch -->
+   <form id="trackActivityForm" action="{{ url_for('views.save_tracked_activity_data') }}" method="POST" style="display: none;">
+      <input type="hidden" name="duration" id="durationInput">
+      <input type="hidden" name="activity" id="activityInput">
+      <input type="hidden" name="start_time" id="startTimeInput">
+      <input type="hidden" name="end_time" id="endTimeInput">
+      <input type="hidden" name="user_activity_id" id="userActivityIdInput">
+      <button type="submit" id="submitFormButton"></button>
+  </form>
    
   
     <!-- importing my custom JS code from the 'static' folder-->

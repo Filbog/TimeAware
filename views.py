@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from models import db, User, UserActivity
+from models import db, User, UserActivity, TrackActivity
+from datetime import datetime
 
 views = Blueprint("views", __name__)
 
@@ -23,21 +24,24 @@ def home():
 @views.route("/save-tracked-activity-data", methods=["GET", "POST"])
 def save_tracked_activity_data():
     if request.method == "POST":
-        data = request.get_json()
+        activity = request.form.get("activity")
+        duration = request.form.get("duration")
+        start_time_str = request.form.get("start_time")
+        end_time_str = request.form.get("end_time")
+        user_activity_id = request.form.get("user_activity_id")
 
-        # Access the data values
-        duration = data["duration"]
-        selectedActivity = data["activity"]
-        start_time = data["start_time"]
-        end_time = data["end_time"]
-        user_activity_id = data["user_activity_id"]
-
-        # Perform any necessary operations with the data
-        # For example, save the data to the database
-
-        print(end_time)
+        start_time = datetime.strptime(start_time_str, "%Y-%m-%d %H:%M:%S")
+        end_time = datetime.strptime(end_time_str, "%Y-%m-%d %H:%M:%S")
+        new_record = TrackActivity(
+            duration=duration,
+            end_time=end_time,
+            start_time=start_time,
+            user_activity_id=user_activity_id,
+        )
+        db.session.add(new_record)
+        db.session.commit()
         flash("Tracking data saved successfully", category="success")
-        return redirect(url_for("views.dashboard"))
+        return redirect(url_for("views.home"))
 
 
 @views.route("/about")

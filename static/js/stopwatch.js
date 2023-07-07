@@ -27,7 +27,7 @@ let appendHours = document.querySelector('#hours');
 function getStartTime() { 
     startTime = Date.now();
     startTime = new Date(startTime);    
-    startTime = startTime.toISOString();
+    startTime = startTime.toISOString().slice(0, 19).replace('T', ' ');
 
 }
 
@@ -35,7 +35,7 @@ function finishStopwatch() {
     // getting the end time
     endTime = Date.now();
     endTime = new Date(endTime);    
-    endTime = endTime.toISOString();
+    endTime = endTime.toISOString().slice(0, 19).replace('T', ' ');
 
     const data = {
         duration: duration,
@@ -45,25 +45,41 @@ function finishStopwatch() {
         user_activity_id: activityId
     };
 
-    fetch('/save-tracked-activity-data', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(function(response) {
-        if (response.ok) {
-            console.log('Data sent successfully');
-            // location.reload();
-        } else {
-            console.error('Error sending data:', response.status)
-        }   
-    })
-    .catch(function(error) {
-        // Handle the error
-        console.error('An error occurred:', error)
-    });
+    // fetch('/save-tracked-activity-data', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(data)
+    // })
+    // .then(function(response) {
+    //     if (response.ok) {
+    //         console.log('Data sent successfully');
+    //         return response.text()
+    //     } else {
+    //         console.error('Error sending data:', response.status);
+    //         throw new Error('Error sending data');
+    //     }   
+    // })
+    // .then(function(data){
+    //     // console.log('Response:', data)
+    //     // location.reload();
+    // })
+    // .catch(function(error) {
+    //     // Handle the error
+    //     console.error('An error occurred:', error)
+    // });
+    //set values to a sneaky form
+    document.getElementById("durationInput").value = duration;
+    document.getElementById("activityInput").value = selectedActivity;
+    document.getElementById("startTimeInput").value = startTime;
+    document.getElementById("endTimeInput").value = endTime;
+    document.getElementById("userActivityIdInput").value = activityId;
+    console.log(endTime)
+    console.log(startTime)
+
+    // Submit the form, this line basically "click" on the hidden 'submit' button upon finishing the count
+    document.getElementById("submitFormButton").click();
     
 }
 
