@@ -8,6 +8,8 @@ let seconds = 0;
 let minutes = 0;
 let hours = 0;
 
+const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 const startBtn = document.querySelector('#start');
 const finishBtn = document.querySelector('#finish');
 const pauseBtn = document.querySelector('#pause');
@@ -25,17 +27,21 @@ let appendHours = document.querySelector('#hours');
 
 
 function getStartTime() { 
-    startTime = Date.now();
-    startTime = new Date(startTime);    
-    startTime = startTime.toISOString().slice(0, 19).replace('T', ' ');
+    // startTime = Date.now();
+    // startTime = new Date(startTime);    
+    // startTime = startTime.toISOString().slice(0, 19).replace('T', ' ');
+    
+  startTime = new Date().toLocaleString('en-US', { timeZone: userTimezone });
 
 }
 
 function finishStopwatch() {
     // getting the end time
-    endTime = Date.now();
-    endTime = new Date(endTime);    
-    endTime = endTime.toISOString().slice(0, 19).replace('T', ' ');
+    // endTime = Date.now();
+    // endTime = new Date(endTime);    
+    // endTime = endTime.toISOString().slice(0, 19).replace('T', ' ');
+
+    endTime = new Date().toLocaleString('en-US', { timeZone: userTimezone });
 
     const data = {
         duration: duration,

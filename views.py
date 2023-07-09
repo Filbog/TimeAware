@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from models import db, User, UserActivity, TrackActivity
-from datetime import datetime
+from datetime import datetime, timedelta
 
 views = Blueprint("views", __name__)
 
@@ -30,8 +30,8 @@ def save_tracked_activity_data():
         end_time_str = request.form.get("end_time")
         user_activity_id = request.form.get("user_activity_id")
 
-        start_time = datetime.strptime(start_time_str, "%Y-%m-%d %H:%M:%S")
-        end_time = datetime.strptime(end_time_str, "%Y-%m-%d %H:%M:%S")
+        start_time = datetime.strptime(start_time_str, "%m/%d/%Y, %I:%M:%S %p")
+        end_time = datetime.strptime(end_time_str, "%m/%d/%Y, %I:%M:%S %p")
         new_record = TrackActivity(
             duration=duration,
             end_time=end_time,
@@ -44,9 +44,74 @@ def save_tracked_activity_data():
         return redirect(url_for("views.home"))
 
 
-@views.route("/about")
-def about():
-    return render_template("about.html", user=current_user)
+@views.route("/statistics", methods=["GET", "POST"])
+@login_required
+def statistics():
+    if request.method == "POST":
+        activityName = request.form.get("activity")
+        # validators for activity
+        activityExists = UserActivity.query.filter_by(name=activityName).first()
+
+        if activityExists == None:
+            flash("Invalid activity", category="error")
+            return render_template(
+                "statistics.html", user=current_user, activities=current_user.activities
+            )
+
+        periodInDays = request.form.get("periodInDays")
+
+        # validators for periodInDays
+        if (
+            not periodInDays.isdigit()
+            or int(periodInDays) > 365
+            or int(periodInDays) < 1
+        ):
+            flash("Invalid time period", category="error")
+            return render_template(
+                "statistics.html", user=current_user, activities=current_user.activities
+            )
+        periodInDays = int(periodInDays)
+        today = datetime.now().date()
+        start_date = today - timedelta(days=periodInDays)
+        # print(activity)
+        # print(periodInDays)
+        # print(today)
+        # print(start_date)
+
+        # Query the TrackActivity table to retrieve the relevant data
+        track_activities = (
+            TrackActivity.query.join(UserActivity)
+            .filter(
+                UserActivity.name == activityName,
+                TrackActivity.start_time >= start_date,
+            )
+            .all()
+        )
+
+        chart_data = {"labels": [], "data": []}
+
+        for activity in track_activities:
+            chart_data["labels"].append(
+                activity.start_time.strftime("%Y-%m-%d %H:%M:%S")
+            )
+            chart_data["data"].append(activity.duration)
+        print(chart_data["data"])
+        return render_template(
+            "display_statistics.html",
+            activity=activityName,
+            **chart_data,
+            user=current_user
+        )
+
+    return render_template(
+        "statistics.html", user=current_user, activities=current_user.activities
+    )
+
+
+@views.route("/display-statistics", methods=["GET"])
+@login_required
+def display_statistics():
+    return render_template("display_statistics.html", user=current_user)
 
 
 @views.route("/dashboard", methods=["GET", "POST"])
@@ -80,3 +145,8 @@ def dashboard():
     return render_template(
         "dashboard.html", user=current_user, activities=current_user.activities
     )
+
+
+@views.route("/about")
+def about():
+    return render_template("about.html", user=current_user)

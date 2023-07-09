@@ -71,3 +71,27 @@
         max-width: 75%;
     }
  }
+
+
+ /* options colors in my dashboard */
+
+ .option-positive {
+    background-color: #9ffaca;
+ }
+
+ .option-neutral {
+    background-color: #f5f5f5;
+ }
+
+ .option-negative {
+    background-color: #fcc9c9;
+ }
+
+
+
+.scrollable-dropdown {
+    height: auto;
+    max-height: 200px; /* Adjust the maximum height as needed */
+    overflow-y: auto;
+    
+}

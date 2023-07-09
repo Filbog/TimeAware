@@ -1,0 +1,67 @@
+{% extends "layout.html" %} 
+{% block title %} Statistics {%endblock%} 
+
+{% block content %}
+<main class="container py-3">
+    <h1 align="center" class='my-3'>Statistics</h1>
+    {% if activities|length > 0 %}
+    <h3 class='mt-4 mb-3'>Choose your activity:</h3>
+    <form method="POST" class='d-flex flex-column justify-content-center'>
+        
+        <select class='form-select' name="activity" id="activityName">
+            {% for activity in activities %}
+            <option class='option-{{ activity.type }}'>{{ activity.name }}</option>
+            {% endfor %}
+        </select>
+        <!-- hidden input to easily get the ID for query later-->
+        
+    <h3 class="mt-4 mb-3">Select a period:</h3>
+    <select name="periodInDays" class='form-select mb-3'>
+        <option value="1">Last 24 hours </option>
+        <option value="3">Last 3 days </option>
+        <option value="7">Last week </option>
+        <option value="30">Last month </option>
+        <option value="365">Last year</option>
+    </select>
+    <button type="submit" class="btn btn-primary mx-auto mb-3" id='submitBtn'>Show Statistics</button>
+    </form>
+    <h3 id="displayChosenActivity" style="display: none;"></h3>
+    <div>
+        <canvas id="myChart"></canvas>
+      </div>
+    {% else %}
+            <p>No activities yet. </p>
+
+    {% endif %}
+    
+      
+      
+</main>
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+<!-- including Chart.js library-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+  
+    {% endblock %}
+    

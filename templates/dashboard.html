@@ -9,14 +9,14 @@
        <input type="text" id='activity' name='activity' class='form-control mt-1 mb-3' min='3' max='100' required>
 
        <div class="radio-buttons mx-auto mb-3">
-        <input type="radio" id="good" name="type" value="good" class="visually-hidden">
-        <label for="good" class="button-label mx-2">Good</label>
+        <input type="radio" id="good" name="type" value="positive" class="visually-hidden">
+        <label for="good" class="button-label mx-2 option-positive">Positive</label>
         
         <input type="radio" id="neutral" name="type" value="neutral" class="visually-hidden" checked>
-        <label for="neutral" class="button-label mx-2">Neutral</label>
+        <label for="neutral" class="button-label mx-2 option-neutral">Neutral</label>
         
-        <input type="radio" id="bad" name="type" value="bad" class="visually-hidden">
-        <label for="bad" class="button-label mx-2">Bad</label>
+        <input type="radio" id="bad" name="type" value="negative" class="visually-hidden">
+        <label for="bad" class="button-label mx-2 option-negative">Negative</label>
     </div>
 
     <button type="submit" class="btn btn-primary mx-auto">Add Activity</button>
@@ -26,7 +26,7 @@
     {% if activities|length > 0 %}
     <select class='form-select' name="" id="">
         {% for activity in activities %}
-        <option>{{ activity.name }}</option>
+        <option class='option-{{ activity.type }}'>{{ activity.name }}</option>
         {% endfor %}
     </select>
     {% else %}
@@ -35,7 +35,6 @@
     {% endif %}
 
 </main>
- 
-    
+
     {% endblock %}
     
