@@ -1,10 +1,40 @@
 {% extends "layout.html" %} 
-{% block title %} Statistics for {{activity}} {%endblock%} 
+{% block title %} Statistics for {{activityName}} {%endblock%} 
 
 {% block content %}
-    <h1 align="center" class='mt-3'>Statistics for {{activity}}</h1>
+    <h1 align="center" class='mt-3 option-{{activityType}}'>Statistics for {{activityName}}</h1>
+    <h5 align="center" class='mt-3'>Total duration: {{ total_duration }}</h5>
+    <div>
+        <canvas id="myChart" class='mt-3'></canvas>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('myChart');
+    
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ labels | tojson }},
+                datasets: [{
+                    label: 'Total duration on a given day',
+                    data: {{ data | tojson }},
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 
-
+    <div class="d-flex justify-content-center align-items-center mt-3">
+        <a class="btn btn-primary" href='/statistics'>Return to Activity Selection</a>
+    </div>
     
     {% endblock %}
     

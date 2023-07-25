@@ -51,8 +51,10 @@ def statistics():
         activityName = request.form.get("activity")
         # validators for activity
         activityExists = UserActivity.query.filter_by(name=activityName).first()
+        activityType = UserActivity.query.filter_by(name=activityName).first().type
+        print(activityType)
 
-        if activityExists == None:
+        if activityExists is None:
             flash("Invalid activity", category="error")
             return render_template(
                 "statistics.html", user=current_user, activities=current_user.activities
@@ -71,36 +73,14 @@ def statistics():
                 "statistics.html", user=current_user, activities=current_user.activities
             )
         periodInDays = int(periodInDays)
-        today = datetime.now().date()
-        start_date = today - timedelta(days=periodInDays)
-        # print(activity)
-        # print(periodInDays)
-        # print(today)
-        # print(start_date)
-
-        # Query the TrackActivity table to retrieve the relevant data
-        track_activities = (
-            TrackActivity.query.join(UserActivity)
-            .filter(
-                UserActivity.name == activityName,
-                TrackActivity.start_time >= start_date,
+        return redirect(
+            url_for(
+                "views.display_statistics",
+                user=current_user,
+                activity=activityName,
+                period=periodInDays,
+                activityType=activityType,
             )
-            .all()
-        )
-
-        chart_data = {"labels": [], "data": []}
-
-        for activity in track_activities:
-            chart_data["labels"].append(
-                activity.start_time.strftime("%Y-%m-%d %H:%M:%S")
-            )
-            chart_data["data"].append(activity.duration)
-        print(chart_data["data"])
-        return render_template(
-            "display_statistics.html",
-            activity=activityName,
-            **chart_data,
-            user=current_user
         )
 
     return render_template(
@@ -108,10 +88,54 @@ def statistics():
     )
 
 
-@views.route("/display-statistics", methods=["GET"])
+@views.route(
+    "/display-statistics/<activity>/<int:period>/<activityType>", methods=["GET"]
+)
 @login_required
-def display_statistics():
-    return render_template("display_statistics.html", user=current_user)
+def display_statistics(activity, period, activityType):
+    today = datetime.now().date()
+    start_date = today - timedelta(days=period)
+    activityName = activity
+    track_activities = (
+        TrackActivity.query.join(UserActivity)
+        .filter(
+            UserActivity.name == activity,
+            TrackActivity.start_time >= start_date,
+        )
+        .all()
+    )
+
+    chart_data = {"labels": [], "data": []}
+    total_duration = 0
+
+    for activity in track_activities:
+        date_str = activity.start_time.strftime("%Y-%m-%d")
+        if date_str not in chart_data["labels"]:
+            chart_data["labels"].append(date_str)
+            chart_data["data"].append(activity.duration)
+        else:
+            index = chart_data["labels"].index(date_str)
+            chart_data["data"][index] += activity.duration
+        total_duration += activity.duration
+
+    if total_duration > 3600:
+        total_duration = f"{int(total_duration/3600)} hours, {int(total_duration/60)} minutes and {total_duration % 3600 } seconds"
+    elif total_duration > 60:
+        total_duration = (
+            f"{int(total_duration/60)} minutes and {total_duration % 60 } seconds"
+        )
+    else:
+        total_duration = f"{total_duration} seconds"
+
+    return render_template(
+        "display_statistics.html",
+        activity=activity,
+        **chart_data,
+        user=current_user,
+        activityName=activityName,
+        activityType=activityType,
+        total_duration=total_duration,
+    )
 
 
 @views.route("/dashboard", methods=["GET", "POST"])
