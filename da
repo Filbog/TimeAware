@@ -1,0 +1,15 @@
+[33m6059b94[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m added most front end functionality, now trying to tackle e-mail validation for registration and forgot password
+[33m8cd608f[m trying to add the delete functionality to the dashboard
+[33md649bc5[m this is getting hard.
+[33m8c1581e[m data gets sent to the database upon finishing tracking, great!
+[33ma84d520[m doing this commit so I don't destroy my code with what I'm gonna do next
+[33ma5c5b1f[m finished the tracker functionality, now the data gets sent to the backend. Next I have to add the data to the database
+[33m7f051d9[m created stopwatch with all functionality except adding data to database
+[33m7e69a97[m changes to the database models and tables, some authentication added in the dashboard
+[33mb99401d[m more progress on the dashboard
+[33m84bf1c5[m started creating dashboard
+[33m9248721[m all the basic backend stuff done, next step is adding functionality
+[33m1572077[m minor tweaks
+[33m84b2cd3[m added some authentication, displaying alerts during authentication
+[33mbf7c113[m Added all files except .venv
+[33md837aa5[m first commit
