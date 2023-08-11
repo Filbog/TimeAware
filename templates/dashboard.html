@@ -2,14 +2,14 @@
 {% block title %} Dashboard {%endblock%} 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% block content %}
-<main class="container py-5">
-    <h1 align="center" class='my-5'>Dashboard</h1>
-    <form method="POST" class='d-flex flex-column justify-content-center' id='add-activity' name='add-activity'>
+<main class="container py-3">
+    <h1 align="center" class='my-3'>Dashboard</h1>
+    <form method="POST" class='d-flex flex-column justify-content-center' id='add-activity'>
        <label for="activity"><h3>Insert a new activity to track:</h3></label>
-       <input type="text" id='activity' name='activity' class='form-control mt-1 mb-3' min='3' max='100' required>
+       <input type="text" id='activity' name='add-activity' class='form-control mt-1 mb-3' min='3' max='100' required>
 
        <div class="radio-buttons mx-auto mb-3">
-        <p align='center'>Choose the type of the activity:</p>
+        <p align='center'><strong>Choose the type of the activity:</strong></p>
         <input type="radio" id="good" name="type" value="positive" class="visually-hidden">
         <label for="good" class="button-label mx-sm-2 mx-md-3 option-positive">Positive</label>
         
@@ -20,17 +20,18 @@
         <label for="bad" class="button-label mx-sm-2 mx-md-3 option-negative">Negative</label>
     </div>
 
-    <button type="submit" class="btn btn-primary mx-auto">Add Activity</button>
+    <button type="submit" class="btn custom-secondary-btn mx-auto">Add Activity</button>
     </form>
-<form id="browse-or-delete" class='d-flex flex-column justify-content-center' method="POST" name='browse-or-delete'>
+<form id="browse-or-delete" class='d-flex flex-column justify-content-center' method="POST">
     <h3 class='mt-5 mb-3'>Browse/delete your activities:</h3>
     {% if activities|length > 0 %}
-    <select class='form-select' name="" id="select-activity">
+    <select class='form-select' name='browse-or-delete' id="select-activity">
+        <option disabled selected >Select existing activity... </option>
         {% for activity in activities %}
-        <option class='option-{{ activity.type }}'>{{ activity.name }}</option>
+        <option class='option-{{ activity.type }}' value="{{activity.id}}">{{ activity.name }}</option>
         {% endfor %}
     </select>
-    <button type="button" class="btn btn-danger mx-auto my-3" id="deleteActivityBtn">Delete Activity</button>
+    <button class="btn btn-danger mx-auto my-3" id="deleteActivityBtn" type='submit'>Delete Activity</button>
     {% else %}
         <p>No activities yet. </p>
 

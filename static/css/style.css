@@ -1,9 +1,16 @@
 /* Custom colors */
 :root {
     --primary-color: #ff0000; /* Red */
-    --secondary-color: #00ff00; /* Green */
-    --tertiary-color: #babbf7;
-    --tertiary-color-hover: #9c9ded;
+    --secondary-color: #8353ece4;
+    --secondary-color-hover: rgb(145, 57, 222);
+    --tertiary-color: #bdbdf9;
+    --tertiary-color-hover: #b999f5;
+    --green: #9ffaca;
+  }
+
+  body{
+    background: rgb(92, 197, 255);
+background: linear-gradient(90deg, rgba(92, 197, 255, 0.6) 0%, rgba(237, 220, 255, 0.6) 69%);
   }
 
 
@@ -13,8 +20,18 @@
 }
 
 .custom-tertiary {
-    background-color: var(--tertiary-color);
-    border-color: var(--tertiary-color);
+  background-color: var(--tertiary-color);
+}
+
+.custom-secondary-btn {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: white;
+}
+
+.custom-secondary-btn:hover {
+  background-color: var(--secondary-color-hover);
+  color: white;
 }
 
 .nav-link {
@@ -54,12 +71,11 @@
   }
   
   input[type="radio"]:checked + .button-label {
-    background-color: #007bff;
-    color: #fff;
+    outline: 2px solid black;
   }
   
   input[type="radio"]:focus + .button-label {
-    outline: 2px solid #007bff;
+    outline: 2px solid black;
   }
 
 
@@ -76,11 +92,11 @@
  /* options colors in my dashboard */
 
  .option-positive, .option-good {
-    background-color: #9ffaca;
+    background-color: var(--green);
  }
 
  .option-neutral {
-    background-color: #f5f5f5;
+    background-color: var(--tertiary-color);
  }
 
  .option-negative, .option-bad {
@@ -97,3 +113,20 @@
     overflow-y: auto;
     
 }
+
+#scrollToTechnologies {
+  margin: 0 auto;
+  color: inherit; /* Set the color to inherit from the parent element */
+  text-decoration: none; /* Remove underlines */
+}
+
+.add-btn
+{
+  background: var(--green);
+}
+
+.add-btn:hover{
+  background: var(--tertiary-color-hover);
+}
+
+

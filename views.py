@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_required, current_user
 from models import db, User, UserActivity, TrackActivity
 from datetime import datetime, timedelta
+from collections import defaultdict
 
 views = Blueprint("views", __name__)
 
@@ -18,7 +19,7 @@ def home():
             "tracker.html", user=current_user, activities=current_user.activities
         )
     else:
-        return render_template("index.html", user=current_user)
+        return render_template("login.html", user=current_user)
 
 
 @views.route("/save-tracked-activity-data", methods=["GET", "POST"])
@@ -73,69 +74,90 @@ def statistics():
                 "statistics.html", user=current_user, activities=current_user.activities
             )
         periodInDays = int(periodInDays)
-        return redirect(
-            url_for(
-                "views.display_statistics",
-                user=current_user,
-                activity=activityName,
-                period=periodInDays,
-                activityType=activityType,
-            )
-        )
+        statistics_data = calculate_statistics(activityName, periodInDays)
+        # return jsonify(statistics_data)
 
     return render_template(
         "statistics.html", user=current_user, activities=current_user.activities
     )
 
 
-@views.route(
-    "/display-statistics/<activity>/<int:period>/<activityType>", methods=["GET"]
-)
-@login_required
-def display_statistics(activity, period, activityType):
+def calculate_statistics(activity_names, period_in_days):
     today = datetime.now().date()
-    start_date = today - timedelta(days=period)
-    activityName = activity
+    start_date = today - timedelta(days=period_in_days)
+
     track_activities = (
         TrackActivity.query.join(UserActivity)
         .filter(
-            UserActivity.name == activity,
+            UserActivity.name.in_(activity_names),
             TrackActivity.start_time >= start_date,
         )
         .all()
     )
 
-    chart_data = {"labels": [], "data": []}
+    # Create a defaultdict to store the sum of durations for each day and activity
+    daily_durations = defaultdict(lambda: defaultdict(int))
+
+    # Calculate the total duration and sum of durations for each day and activity
     total_duration = 0
+    for track_activity in track_activities:
+        duration = track_activity.duration
+        total_duration += duration
 
-    for activity in track_activities:
-        date_str = activity.start_time.strftime("%Y-%m-%d")
-        if date_str not in chart_data["labels"]:
-            chart_data["labels"].append(date_str)
-            chart_data["data"].append(activity.duration)
-        else:
-            index = chart_data["labels"].index(date_str)
-            chart_data["data"][index] += activity.duration
-        total_duration += activity.duration
+        # Get the date of the track_activity and add the duration to the corresponding day and activity
+        activity_date = track_activity.start_time.date()
+        activity_name = track_activity.user_activity.name
+        daily_durations[str(activity_date)][
+            activity_name
+        ] += duration  # Convert the date to a string
 
+    # Format the total_duration as before
     if total_duration > 3600:
-        total_duration = f"{int(total_duration/3600)} hours, {int(total_duration/60)} minutes and {total_duration % 3600 } seconds"
+        hours = int(total_duration / 3600)
+        minutes = int((total_duration - hours * 3600) / 60)
+        seconds = int(total_duration % 60)
+        total_duration = f"{hours} hours, {int(minutes)} minutes and {seconds} seconds"
     elif total_duration > 60:
         total_duration = (
-            f"{int(total_duration/60)} minutes and {total_duration % 60 } seconds"
+            f"{int(total_duration/60)} minutes and {total_duration % 60} seconds"
         )
     else:
         total_duration = f"{total_duration} seconds"
 
-    return render_template(
-        "display_statistics.html",
-        activity=activity,
-        **chart_data,
-        user=current_user,
-        activityName=activityName,
-        activityType=activityType,
-        total_duration=total_duration,
-    )
+    # Return the calculated statistics data as a dictionary
+    statistics_data = {
+        "activity_names": activity_names,
+        "period": period_in_days,
+        "total_duration": total_duration,
+        "daily_durations": daily_durations,
+    }
+
+    return statistics_data
+
+
+@views.route("/get-statistics", methods=["GET"])
+@login_required
+def get_statistics():
+    activity_names = request.args.get("activity").split(",")  # Split activity names
+    period_in_days = int(request.args.get("period"))
+
+    # Query the database to get the relevant statistics data
+    statistics_data = calculate_statistics(activity_names, period_in_days)
+
+    # Return the statistics data in JSON format
+    return jsonify(statistics_data)
+
+
+@views.route("/get-activity-options", methods=["GET"])
+@login_required
+def get_activity_options():
+    # Fetch the available activity options from the database
+    activity_options = [
+        {"name": activity.name, "type": activity.type}
+        for activity in UserActivity.query.all()
+    ]
+    # Return the activity options in JSON format
+    return jsonify({"activity_options": activity_options})
 
 
 @views.route("/dashboard", methods=["GET", "POST"])
@@ -146,26 +168,52 @@ def dashboard():
             "dashboard.html", user=current_user, activities=current_user.activities
         )
     elif request.method == "POST":
-        activity = request.form.get("activity")
-        type = request.form.get("type")
-        print("Activity:", activity)
-        print("Type:", type)
-        activityExists = UserActivity.query.filter_by(name=activity).first()
-        if len(activity) < 3:
-            flash("Activity name must be at least 3 characters", category="error")
-        elif activityExists:
-            flash("Activity already exists", category="error")
-        else:
-            new_record = UserActivity(name=activity, type=type, user_id=current_user.id)
-            db.session.add(new_record)
-            db.session.commit()
-            activities = UserActivity.query.filter_by(user_id=current_user.id).all()
-            print(activities)
-            # Rest of your code...
-            flash("Activity added!", category="success")
-            return render_template(
-                "dashboard.html", user=current_user, activities=current_user.activities
-            )
+        print(request.form)
+        if "add-activity" in request.form:
+            activity = request.form.get("add-activity").strip()
+            type = request.form.get("type")
+            print("Activity:", activity)
+            print("Type:", type)
+            activityExists = UserActivity.query.filter_by(name=activity).first()
+            if len(activity) < 3:
+                flash("Activity name must be at least 3 characters", category="error")
+            elif activityExists:
+                flash("Activity already exists", category="error")
+            else:
+                new_record = UserActivity(
+                    name=activity, type=type, user_id=current_user.id
+                )
+                db.session.add(new_record)
+                db.session.commit()
+                activities = UserActivity.query.filter_by(user_id=current_user.id).all()
+                print(activities)
+
+                flash("Activity added!", category="success")
+                return render_template(
+                    "dashboard.html",
+                    user=current_user,
+                    activities=current_user.activities,
+                )
+        elif "browse-or-delete" in request.form:
+            activity_id = request.form.get("browse-or-delete")
+            # print(activity_id)
+            if activity_id:
+                activity = UserActivity.query.get(activity_id)
+                # Retrieve all instances of the activity from the TrackActivity table
+                track_activities = TrackActivity.query.filter_by(
+                    user_activity_id=activity.id
+                ).all()
+
+                # Delete each instance of the activity from the TrackActivity table
+                for track_activity in track_activities:
+                    db.session.delete(track_activity)
+
+                # Delete the activity from the UserActivity table
+                db.session.delete(activity)
+                db.session.commit()
+                flash("Activity deleted successfully", category="success")
+            else:
+                flash("Please select an activity to delete", category="error")
     return render_template(
         "dashboard.html", user=current_user, activities=current_user.activities
     )

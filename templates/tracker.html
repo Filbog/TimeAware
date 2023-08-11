@@ -2,41 +2,49 @@
 {% block title %} Tracker {%endblock%} 
 
 {% block content %}
-    <h1 align="center" class='mt-3'>Logged in/Tracker</h1>
-    {% if activities|length > 0 %}
-      <div id="activityContainer">
-         <h3>Select activity to track:</h3>
-         <select class='form-select' name="activityToTrack" id="activityToTrack">
-            {% for activity in activities %}
-            <option value="{{ activity.id }}">{{ activity.name }} </option>
-            
-            {% endfor %}
-         </select>
-      </div>
-      <h3 id="displayChosenActivity" style="display: none;"></h3>
-     
-    {% else %}
-        <p>No activities yet. You can add new activites in Dashboard! </p>
-
-    {% endif %}
-    <h1 class="display-1" id='stopwatch'>
-      <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
-   </h1>
+<main class="container py-3">
+   <h1 align="center" class='mt-3'>Logged in/Tracker</h1>
+   {% if activities|length > 0 %}
+     <div id="activityContainer">
+        <h3>Select activity to track:</h3>
+        <select class='form-select' name="activityToTrack" id="activityToTrack">
+           {% for activity in activities %}
+           <option value="{{ activity.id }}" class="option-{{ activity.type }}">{{ activity.name }} </option>
+           
+           {% endfor %}
+        </select>
+     </div>
+     <h3 id="displayChosenActivity" style="display: none;"></h3>
     
-   <button id="start">Start</button>
-   <button id="pause">Pause</button>
-   <button id="finish">Finish</button>
+   {% else %}
+       <p>No activities yet. You can add new activites in Dashboard! </p>
+
+   {% endif %}
+   <div class="d-flex flex-column justify-content-evenly">
+     <h1 class="display-1 mt-3 mx-auto" id='stopwatch'>
+        <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+     </h1>
+      <div class="buttons mx-auto">
+         <button class='btn custom-secondary-btn py-2 px-4' id="start"><h4>Start</h4></button>
+         <button class='btn custom-secondary-btn py-2 px-4' id="pause"><h4>Pause</h4></button>
+         <button class='btn custom-secondary-btn py-2 px-4 mx-2' id="finish"><h4>Finish</h4></button>
+      </div>
+     
+   </div>
+   
 
 
-   <!--Sneaky workaround to not send AJAX request with fetch -->
-   <form id="trackActivityForm" action="{{ url_for('views.save_tracked_activity_data') }}" method="POST" style="display: none;">
-      <input type="hidden" name="duration" id="durationInput">
-      <input type="hidden" name="activity" id="activityInput">
-      <input type="hidden" name="start_time" id="startTimeInput">
-      <input type="hidden" name="end_time" id="endTimeInput">
-      <input type="hidden" name="user_activity_id" id="userActivityIdInput">
-      <button type="submit" id="submitFormButton"></button>
-  </form>
+  <!--Sneaky workaround to not send AJAX request with fetch -->
+  <form id="trackActivityForm" action="{{ url_for('views.save_tracked_activity_data') }}" method="POST" style="display: none;">
+     <input type="hidden" name="duration" id="durationInput">
+     <input type="hidden" name="activity" id="activityInput">
+     <input type="hidden" name="start_time" id="startTimeInput">
+     <input type="hidden" name="end_time" id="endTimeInput">
+     <input type="hidden" name="user_activity_id" id="userActivityIdInput">
+     <button type="submit" id="submitFormButton"></button>
+ </form>
+</main>
+    
    
   
     <!-- importing my custom JS code from the 'static' folder-->
