@@ -5,6 +5,8 @@ from flask_login import LoginManager
 from models import db
 from models import User
 
+from views import views
+
 
 migrate = Migrate()
 
@@ -33,7 +35,7 @@ def create_app():
         return User.query.get(int(id))
 
     # registering our blueprints
-    from views import views
+
     from auth import auth
 
     app.register_blueprint(views, url_prefix="/")

@@ -14,26 +14,28 @@ document.addEventListener("DOMContentLoaded", function() {
             fetch("/get-activity-options")
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data.activity_options);
                     activityCounter++;
                     const activityOptions = data.activity_options;
                     const additionalSelectMenu = document.createElement('select');
                     additionalSelectMenu.className = 'form-select';
                     additionalSelectMenu.name = 'activity';
-                    additionalSelectMenu.id = 'activityName' + (activityCounter);
+                    additionalSelectMenu.id = 'activityName' + activityCounter; // Use activityCounter as part of the ID
                     // additionalSelectMenu.addEventListener("change", fetchStatistics);
-
+    
                     for (const option of activityOptions) {
                             const optionElement = document.createElement('option');
                             optionElement.textContent = option.name;
                             optionElement.className = 'option-' + option.type;
                             additionalSelectMenu.appendChild(optionElement);
                     }
-
+    
                     additionalSelectActivityMenu.appendChild(additionalSelectMenu);
                 })
                 .catch(error => console.log(error))
         }
     });
+    
 
     generateStatisticsButton.addEventListener('click', () => {
         fetchStatistics();
@@ -47,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
         // Loop through all additional select menus and add their selected values to the array
         for (let i = 1; i <= activityCounter; i++) {
-            const additionalSelectMenu = document.getElementById('activityName' + (i));
+            const additionalSelectMenu = document.getElementById('activityName' + i);
             allSelectedActivities.push(additionalSelectMenu.value);
         }
     
@@ -63,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .catch(error => console.log(error));
     }
+    
     
     function updateChart(data) {
         if (myChart) {
