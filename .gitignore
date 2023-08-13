@@ -7,5 +7,6 @@ Scripts/
 __pycache__/
 
 Scripts/
+Scripts
 
 pyvenv.cfg
