@@ -26,7 +26,7 @@ def create_app():
     # for deployment on fly.io, I guess
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "postgresql://postgres:R17k9TrHftamjyx@timeaware-postgres-db.flycast:5432/database-postgres.db"
+    ] = "postgresql://postgres:R17k9TrHftamjyx@timeaware-postgres-db.flycast:5432/timeaware_db.db"
 
     app.config[
         "SQLALCHEMY_TRACK_MODIFICATIONS"
