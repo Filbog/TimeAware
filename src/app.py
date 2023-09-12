@@ -15,8 +15,19 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = "fq)4540sd#@e&&tpe6v3kjl7!w1k=7^)#6-dfmqf44m7xj"
 
-    # Setting up database
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+    # # # Setting up database
+
+    # # for local environment with SQLite
+    # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+
+    # # for local environment with PostgreSQL - not working
+    # app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://database-postgres.db"
+
+    # for deployment on fly.io, I guess
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = "postgresql://postgres:R17k9TrHftamjyx@timeaware-postgres-db.flycast:5432/database-postgres.db"
+
     app.config[
         "SQLALCHEMY_TRACK_MODIFICATIONS"
     ] = False  # Disable modification tracking
@@ -47,4 +58,4 @@ def create_app():
 app = create_app()
 if __name__ == "__main__":
     # app.run(debug=True)
-    app.run(debug=True, port=8080, host="0.0.0.0")
+    app.run(debug=True, port=5000, host="0.0.0.0")
