@@ -15,7 +15,7 @@ from models import db, User
 auth = Blueprint("auth", __name__)
 
 
-@auth.route("/login", methods=["GET", "POST"])
+@auth.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
         email = request.form.get("email")
@@ -24,6 +24,7 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
+                # db.session.commit()
                 flash("logged in successfully!", category="success")
                 # this logs in the user in Flask. That 'remember=True' makes the server remember the session, so that the user isn't logged out every time they close the window
                 login_user(user, remember=True)
