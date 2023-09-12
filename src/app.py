@@ -18,15 +18,15 @@ def create_app():
     # # # Setting up database
 
     # # for local environment with SQLite
-    # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
     # # for local environment with PostgreSQL - not working
     # app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://database-postgres.db"
 
     # for deployment on fly.io, I guess
-    app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = "postgresql://postgres:R17k9TrHftamjyx@timeaware-postgres-db.flycast:5432/timeaware_db.db"
+    # app.config[
+    #     "SQLALCHEMY_DATABASE_URI"
+    # ] = "postgresql://postgres:R17k9TrHftamjyx@timeaware-postgres-db.flycast:5432/timeaware_db.db"
 
     app.config[
         "SQLALCHEMY_TRACK_MODIFICATIONS"
