@@ -2,10 +2,10 @@
 ### Video Demo: #TODO
 ### Description:
 ### **Empowering Self-Improvement through Mindful Habit Tracking**
-# The idea of TimeAware has been with me for years, but it was the challenge during CS50's Introduction to Computer Programming that motivated me to bring it to life. The result? A simple and minimalistic app designed to help you track your habits without any fuss.
-# We all have our mix of 'good' and 'bad' habits - some we cherish and want to cultivate further, while others we'd rather keep in check. Yet, it's easy to lose track of time when these habits become second nature. I've been there myself, guilty as charged.
-# TimeAware was born out of my desire for self-improvement - a tool to effortlessly identify and monitor daily activities, empowering me to nurture the positive and free up space for what truly matters.
-# With TimeAware, I've kept things clean and straightforward. No distractions, no complications. Just an app that gives you the power to make mindful choices about your habits.
+The idea of TimeAware has been with me for years, but it was the challenge during CS50's Introduction to Computer Programming that motivated me to bring it to life. The result? A simple and minimalistic app designed to help you track your habits without any fuss.
+We all have our mix of 'good' and 'bad' habits - some we cherish and want to cultivate further, while others we'd rather keep in check. Yet, it's easy to lose track of time when these habits become second nature. I've been there myself, guilty as charged.
+TimeAware was born out of my desire for self-improvement - a tool to effortlessly identify and monitor daily activities, empowering me to nurture the positive and free up space for what truly matters.
+With TimeAware, I've kept things clean and straightforward. No distractions, no complications. Just an app that gives you the power to make mindful choices about your habits.
 Join me on this journey of growth and self-discovery. Let TimeAware be your trusted companion, helping you embrace positive change and make the most of every moment.
 ### **Technologies Used**
 # Back end: For the back end of the app, I've used Python with Flask Framework. I loved how lightweight and simple it is. Interesting problems I learned to solve were for example: handling multiple different POST requests no the same .html pages or basic user uthentication on the back end - both using vanilla Python and libraries (for example for email validation)
